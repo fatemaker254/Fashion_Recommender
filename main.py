@@ -4,14 +4,13 @@ import os
 from PIL import Image
 import numpy as np
 import pickle
-from pathlib import Path
 import tensorflow
 from keras.preprocessing import image
 from keras.layers import GlobalMaxPooling2D
 from keras.applications.resnet50 import ResNet50, preprocess_input
 from sklearn.neighbors import NearestNeighbors
 from numpy.linalg import norm
-import streamlit_authenticator as stauth
+
 
 # Set page config first
 st.set_page_config(layout="wide")
@@ -28,6 +27,7 @@ model = tensorflow.keras.Sequential([model, GlobalMaxPooling2D()])
 
 st.sidebar.title("Fashion Recommender ")
 uploaded_file = st.sidebar.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
+
 
 def save_uploaded_file(uploaded_file):
     try:
