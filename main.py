@@ -1,4 +1,5 @@
 import base64
+import tempfile
 import streamlit as st
 import os
 from PIL import Image
@@ -28,13 +29,27 @@ model = tensorflow.keras.Sequential([model, GlobalMaxPooling2D()])
 st.sidebar.title("Fashion Recommender ")
 uploaded_file = st.sidebar.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
-
+"""
 def save_uploaded_file(uploaded_file):
     try:
         with open(os.path.join("uploads", uploaded_file.name), "wb") as f:
             f.write(uploaded_file.getbuffer())
         return 1
     except:
+        return 0
+"""
+
+
+def save_uploaded_file(uploaded_file):
+    try:
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            tmp_file.write(uploaded_file.read())
+            tmp_file.seek(0)
+            # Save the file to a cloud storage service or use it directly from the temporary file
+            # Example: upload tmp_file to AWS S3 or Google Cloud Storage
+            return 1
+    except Exception as e:
+        print(f"Error occurred: {e}")
         return 0
 
 
