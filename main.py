@@ -1,4 +1,3 @@
-import base64
 import tempfile
 import streamlit as st
 import os
@@ -12,7 +11,6 @@ from keras.applications.resnet50 import ResNet50, preprocess_input
 from sklearn.neighbors import NearestNeighbors
 from numpy.linalg import norm
 
-
 # Set page config first
 st.set_page_config(layout="wide")
 
@@ -25,19 +23,8 @@ model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3
 model.trainable = False
 model = tensorflow.keras.Sequential([model, GlobalMaxPooling2D()])
 
-
 st.sidebar.title("Fashion Recommender ")
 uploaded_file = st.sidebar.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
-
-"""
-def save_uploaded_file(uploaded_file):
-    try:
-        with open(os.path.join("uploads", uploaded_file.name), "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        return 1
-    except:
-        return 0
-"""
 
 
 def save_uploaded_file(uploaded_file):
@@ -45,12 +32,10 @@ def save_uploaded_file(uploaded_file):
         with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
             tmp_file.write(uploaded_file.read())
             tmp_file.seek(0)
-            # Save the file to a cloud storage service or use it directly from the temporary file
-            # Example: upload tmp_file to AWS S3 or Google Cloud Storage
-            return 1
+            return tmp_file.name
     except Exception as e:
         print(f"Error occurred: {e}")
-        return 0
+        return None
 
 
 def feature_extraction(img_path, model):
@@ -77,7 +62,6 @@ def display_image(image_path, caption, button_key):
     add_to_cart = st.button(f"Add to Cart: {button_key}")
     if add_to_cart:
         st.session_state.cart_items.append((image_path, caption))
-
     st.write("")  # Add a space below the image
 
 
@@ -86,23 +70,25 @@ if "cart_items" not in st.session_state:
     st.session_state.cart_items = []
 
 if uploaded_file is not None:
-    if save_uploaded_file(uploaded_file):
+    tmp_file_path = save_uploaded_file(uploaded_file)
+    if tmp_file_path:
         # feature extract
-        features = feature_extraction(
-            os.path.join("uploads", uploaded_file.name), model
-        )
+        features = feature_extraction(tmp_file_path, model)
+        if features is not None:
+            # recommendation
+            indices = recommend(features, feature_list)
 
-        # recommendention
-        indices = recommend(features, feature_list)
-
-        # Display images with Add to Cart button
-        st.sidebar.image(
-            uploaded_file, caption="Uploaded Image", use_column_width=False
-        )
-        st.sidebar.info("Recommended Images:")
-        for i in range(5):
-            display_image(filenames[indices[0][i]], f"Image {i+1}\n\tPrice=10$", i + 1)
-
+            # Display images with Add to Cart button
+            st.sidebar.image(
+                uploaded_file, caption="Uploaded Image", use_column_width=False
+            )
+            st.sidebar.info("Recommended Images:")
+            for i in range(5):
+                display_image(
+                    filenames[indices[0][i]], f"Image {i+1}\n\tPrice=10$", i + 1
+                )
+        else:
+            st.error("Error occurred in file processing")
     else:
         st.error("Error occurred in file upload")
 else:
@@ -124,7 +110,6 @@ if place_order_clicked:
     else:
         st.session_state.cart_items = []
         st.sidebar.info("Placed Order Successfully!\n\tThank You for Shopping with Us")
-
 
 # Adjust layout
 st.sidebar.write("")  # Add space
