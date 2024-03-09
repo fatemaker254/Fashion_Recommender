@@ -13,6 +13,7 @@ from numpy.linalg import norm
 
 # Set page config first
 st.set_page_config(layout="wide")
+st.sidebar.title("Fashion Recommender ")
 
 # Load precomputed features and filenames
 feature_list = np.array(pickle.load(open("embeddings.pkl", "rb")))
