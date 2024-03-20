@@ -18,7 +18,7 @@ Download the packages
 ## step4
 Run the model train.py which will automatically create the pkl files embeddings and filenames
 
-`python app.py`
+`python model.py`
 
 ## step5
 Run the streamlit app
