@@ -128,7 +128,7 @@ if authenticate_user():
 
                 # Display images with Add to Cart button
                 st.sidebar.image(
-                    uploaded_file, caption="Uploaded Image", use_column_width=False
+                    uploaded_file, caption="Uploaded Image", use_column_width=True
                 )
                 st.sidebar.info("Recommended Images:")
                 for i in range(5):
@@ -157,8 +157,9 @@ if authenticate_user():
             st.sidebar.info("Your Cart is Empty")
         else:
             st.session_state.cart_items = []
-            st.sidebar.info(
-                "Placed Order Successfully!\n\tThank You for Shopping with Us"
+            st.sidebar.markdown(
+                "<h2 style='text-align: center; color: green;'>Placed Order Successfully!<br>Thank You for Shopping with Us 🥳🥳</h2>",
+                unsafe_allow_html=True,
             )
 
     # Adjust layout
