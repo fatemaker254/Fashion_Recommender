@@ -1,3 +1,4 @@
+import base64
 import tempfile
 import streamlit as st
 import os
@@ -13,7 +14,6 @@ from numpy.linalg import norm
 
 # Set page config first
 st.set_page_config(layout="wide")
-st.sidebar.title("Fashion Recommender ")
 
 # Load precomputed features and filenames
 feature_list = np.array(pickle.load(open("embeddings.pkl", "rb")))
@@ -23,6 +23,42 @@ filenames = pickle.load(open("filenames.pkl", "rb"))
 model = ResNet50(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
 model.trainable = False
 model = tensorflow.keras.Sequential([model, GlobalMaxPooling2D()])
+
+
+@st.cache_data
+def get_img_as_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+
+img = get_img_as_base64("img.jpg")
+# adding background image
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] > .main {{
+background-image:url("data:image/jpg;base64,{img}");
+background-size: 100%;
+background-position: top left;
+background-repeat: repeat;
+background-attachment: local;
+}}
+[data-testid="stHeader"] {{
+background: rgba(0,0,0,0);
+}}
+[data-testid="stToolbar"] {{
+right: 2rem;
+}}
+[data-testid="sttextArea"] {{
+color: white;
+}}
+[data-testid="sttext_input] {{
+color: black; /* Change text color to black */
+background-color: white; /* Change background color to white */
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
 def creds_entered():
@@ -44,6 +80,8 @@ def creds_entered():
 
 
 def authenticate_user():
+    new_title = '<p style="font-family:sans-serif; color:White; font-size: 42px; text-align: center;">Fashion Recommender</p>'
+    st.markdown(new_title, unsafe_allow_html=True)
     if "authenticated" not in st.session_state:
         st.text_input(label="Username", value="", key="user", on_change=creds_entered)
         st.text_input(

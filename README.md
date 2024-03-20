@@ -15,13 +15,17 @@ Download the packages
 
 ```pip install -r requirements.txt ```
 
-
 ## step4
+Run the model train.py which will automatically create the pkl files embeddings and filenames
+
+`python model.py`
+
+## step5
 Run the streamlit app
 
 ``` streamlit run main.py ```
 
-## step5
+## step6
 If you want to check the accuracy curve then
 ``` python test.py ```
 
@@ -32,5 +36,10 @@ https://github.com/fatemaker254/Fashion_Recommender/assets/81921058/a489a52f-a75
 
 https://github.com/fatemaker254/Fashion_Recommender/assets/81921058/fa1829b0-e9ea-4913-9411-a2890bc13fcf
 
- 
+## Final Upload
+
+
+https://github.com/fatemaker254/Fashion_Recommender/assets/81921058/3907a92c-bd1f-4f5b-a253-b2907a4722e8
+
+
 
