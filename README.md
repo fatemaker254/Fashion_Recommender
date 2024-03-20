@@ -15,13 +15,17 @@ Download the packages
 
 ```pip install -r requirements.txt ```
 
-
 ## step4
+Run the model train.py which will automatically create the pkl files embeddings and filenames
+
+`python app.py`
+
+## step5
 Run the streamlit app
 
 ``` streamlit run main.py ```
 
-## step5
+## step6
 If you want to check the accuracy curve then
 ``` python test.py ```
 
